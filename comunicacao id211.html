@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Avaliação de Comunicação Sinalizada</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  .poster { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+  iframe { width: 100%; height: 400px; }
+  label { display: block; margin: 5px 0; }
+  textarea { width: 100%; }
+  button { margin-top: 10px; padding: 5px 10px; }
+</style>
+</head>
+<body>
+
+<h1>Avaliação de Comunicação Sinalizada</h1>
+
+<script>
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzMMSjxhE-AkPYxEdr96w9yjWZbOkURFn9MSJ70pGFAV-u0no1nvhSCtk3cRxrmDJc/exec';
+
+function enviar(e, id) {
+  e.preventDefault();
+  const form = document.getElementById('form' + id);
+  const data = {
+    id: id,
+    status: form.status.value,
+    observacoes: form.observacoes.value,
+    avaliador: form.avaliador.value
+  };
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }).then(res => {
+    if(res.ok) alert('Avaliação enviada!');
+    else alert('Erro ao enviar.');
+    form.reset();
+  });
+}
+
+const posters = [
+  {id:1, pdf:"https://drive.google.com/file/d/1mPKl7UzA5rWkPed8azTIZS62EMgxLA9E/preview"},
+  {id:2, pdf:"https://drive.google.com/file/d/1rHamH7g0gki48T6aDV05So7ztlot_uEb/preview"},
+  {id:3, pdf:"https://drive.google.com/file/d/1W8n5H-yFGC7OBvVE-IUXy1fxuTF4zv8W/preview"},
+  {id:4, pdf:"https://drive.google.com/file/d/1ZrLVgccZl88kEAhiRM2I7y1OFEMU7oHW/preview"},
+  {id:5, pdf:"https://drive.google.com/file/d/1v_OkgjXhXxMmIqPaere28Z39bobTIwZX/preview"},
+  {id:6, pdf:"https://drive.google.com/file/d/1I8cR_BAYljxHozzeF5MqFXy6d8HHPEGD/preview"},
+  {id:7, pdf:"https://drive.google.com/file/d/1ON1dMwCUp19bw2E-x2klMY_mdCUGwMdy/preview"},
+  {id:8, pdf:"https://drive.google.com/file/d/1NRKEbPbtKYpy-31mYOzkCyI3m0ItWxB7/preview"},
+  {id:9, pdf:"https://drive.google.com/file/d/1ftCsjgDDCb7IsJrzZCmObGQcMBUmI_6h/preview"},
+  {id:10, pdf:"https://drive.google.com/file/d/1rrjdyMRxJihYv5Hm_4kO0xQ84eX5jgpR/preview"},
+  {id:11, pdf:"https://drive.google.com/file/d/1KUi1jdluoQ-Btj1noIB6eOxfLipRn4UT/preview"},
+  {id:12, pdf:"https://drive.google.com/file/d/1xdiPBxSZ9ejy5-AhCJZXwIk_zxdxFGYe/preview"},
+  {id:13, pdf:"https://drive.google.com/file/d/1ncTFwCMUkhYSQzXKtSWzLCwFROSX0Tdk/preview"},
+  {id:14, pdf:"https://drive.google.com/file/d/1AweykH71U0mTlgdYFL6-oNj_27I98lp9/preview"},
+  {id:15, pdf:"https://drive.google.com/file/d/11AOS8FjhU5EKBiGaZDbMIxl2anKYnhBd/preview"},
+  {id:16, pdf:"https://drive.google.com/file/d/16S6QY4qN0uo8YPKShtmIK33MxlTXDALz/preview"},
+  {id:17, pdf:"https://drive.google.com/file/d/1YX0sQos6MgsHzgICiMBXBANtWRvABdWW/preview"},
+  {id:18, pdf:"https://drive.google.com/file/d/1CyAM2lIc9QVVCH0pCMPxN0TkvLg87jXw/preview"},
+  {id:19, pdf:"https://drive.google.com/file/d/10U6JJMFS5UJiU5mboXo9u-KHX9FzuKQ6/preview"},
+  {id:20, pdf:"https://drive.google.com/file/d/1QAaxyfo_QryvQM1-1RMP3M_bf88sOqKg/preview"},
+  {id:21, pdf:"https://drive.google.com/file/d/194CN6hcF1ID0c0h6DVBq8-QwC8brU4NX/preview"},
+  {id:22, pdf:"https://drive.google.com/file/d/1oIJGDTrwtb3nqspMAVFr2o6OdW-9LggS/preview"},
+  {id:23, pdf:"https://drive.google.com/file/d/1NouU5Ikh9CbN_SZJLL1XjxVFin2q0J5d/preview"},
+  {id:24, pdf:"https://drive.google.com/file/d/1TuuV6BLMtoNyEnmJHwrUzHodSEtmh-BT/preview"},
+  {id:25, pdf:"https://drive.google.com/file/d/1693OdG0eW6_rWvzW3XNFHNkqhWNjwGjb/preview"},
+  {id:26, pdf:"https://drive.google.com/file/d/1A9NOpQn3chCCVcFCpJiDG5srzPkeWmQg/preview"},
+  {id:27, pdf:"https://drive.google.com/file/d/1Ph9lYXsuZ9hExXDePi3OvcN5coBYm8t7/preview"},
+  {id:28, pdf:"https://drive.google.com/file/d/1t6RaD1VrhHr0FxJRqwySMG4embuRij5t/preview"},
+  {id:29, pdf:"https://drive.google.com/file/d/1VwowDq5iQ28R0qcSU7tpqsI62kcLQE3w/preview"},
+  {id:30, pdf:"https://drive.google.com/file/d/1SY0NK_aEVT6xoXpo6TY3fCYsyPlWzJI7/preview"},
+  {id:31, pdf:"https://drive.google.com/file/d/1kZ0u8-s34EVhmDNEwQQ17rR3gaG-BzJu/preview"},
+  {id:32, pdf:"https://drive.google.com/file/d/1vZNMlOjsK8_fCiQZRqhd99pEtiPAtNOw/preview"},
+  {id:33, pdf:"https://drive.google.com/file/d/1ZTUC86m01jk6EFnsWpVENG8AHthlV7Jc/preview"},
+  {id:34, pdf:"https://drive.google.com/file/d/1ZTUC86m01jk6EFnsWpVENG8AHthlV7Jc/preview"},
+  {id:35, pdf:"https://drive.google.com/file/d/1j4pUUjlD6H6PmVUvrnKdLg6SzQz71xPy/preview"},
+  {id:36, pdf:"https://drive.google.com/file/d/1MxhGqTn394cm3tub2uuxGpo0E3wYdKBI/preview"},
+  {id:37, pdf:"https://drive.google.com/file/d/1hjmVUlleqkGVVMSGCzomDIqijmDpq1eH/preview"},
+  {id:38, pdf:"https://drive.google.com/file/d/1Ky8LjN0GDxrhaVvj-b5-3AEi6Gb4f8LC/preview"},
+  {id:39, pdf:"https://drive.google.com/file/d/1Q0JA5EiejG-0FWYasLVfjABHh3Td5ezF/preview"},
+  {id:40, pdf:"https://drive.google.com/file/d/1f3jTJdBhbexXv6WGysEP1_nwiMAMziQw/preview"},
+  {id:41, pdf:"https://drive.google.com/file/d/1yd2ZRZ2QINtc3NcQCcW2sMpHsLW2yY5l/preview"},
+  {id:42, pdf:"https://drive.google.com/file/d/1c2GIf7vwthe1-8UsRkPKC8fP0B1NU3Wu/preview"},
+  {id:43, pdf:"https://drive.google.com/file/d/1Ik8rkczXznBAJyEh5W7exH7_HGoZCsK_/preview"},
+  {id:44, pdf:"https://drive.google.com/file/d/1fv5UFlnz46g4mLSQZlANP7_8kUWiNjek/preview"},
+  {id:45, pdf:"https://drive.google.com/file/d/1swicAZh23CSKk4glEQnthC31NgR8KdoK/preview"}
+];
+
+const avaliadores = ["Ana Regina", "Fernanda Soares", "Heloise Gripp", "Priscilla Cavalcante"];
+
+posters.forEach(poster => {
+  const div = document.createElement('div');
+  div.className = 'poster';
+  div.innerHTML = `
+    <h2>Avaliação ${poster.id}</h2>
+    <iframe src="${poster.pdf}"></iframe>
+    <form id="form${poster.id}" onsubmit="enviar(event, ${poster.id})">
+      <label>
+        <input type="radio" name="status" value="Aprovado" required> Aprovado
+        <input type="radio" name="status" value="Aprovado com correcoes"> Aprovado com correções
+        <input type="radio" name="status" value="Reprovado"> Reprovado
+      </label>
+      <label>Observações:</label>
+      <textarea name="observacoes"></textarea>
+      <label>Avaliador:
+        <select name="avaliador" required>
+          <option value="">Selecione</option>
+          ${avaliadores.map(a => `<option>${a}</option>`).join('')}
+        </select>
+      </label>
+      <button type="submit">Enviar</button>
+    </form>
+  `;
+  document.body.appendChild(div);
+});
+</script>
+
+</body>
+</html>
