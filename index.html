@@ -1,42 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Avaliação de Comunicação Sinalizada</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  .poster { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
-  iframe { width: 100%; height: 400px; }
-  label { display: block; margin: 5px 0; }
-  textarea { width: 100%; }
-  button { margin-top: 10px; padding: 5px 10px; }
+  body { font-family: Arial, sans-serif; margin: 20px; line-height:1.4; color:#222; }
+  h1 { font-size: 1.6rem; margin-bottom: 12px; }
+  .poster { border: 1px solid #ddd; padding: 14px; margin-bottom: 18px; border-radius:6px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  iframe { width: 100%; height: 420px; border: 1px solid #ccc; border-radius:4px; }
+  label { display: block; margin: 8px 0 6px; font-weight:600; }
+  .radios { margin: 6px 0 10px; }
+  .radios input { margin-left: 8px; margin-right:4px; }
+  textarea { width: 100%; min-height: 70px; padding:8px; border-radius:4px; border:1px solid #ccc; resize: vertical; }
+  select { padding:6px; border-radius:4px; border:1px solid #ccc; }
+  button { margin-top:10px; padding:8px 12px; border-radius:6px; border:none; background:#2b7cff; color:white; cursor:pointer; }
+  button:disabled { opacity:0.6; cursor:not-allowed; }
+  .thanks { padding:10px; background:#e6ffed; border:1px solid #b9f0c6; color:#1b6b2a; border-radius:6px; font-weight:600; }
+  .meta { font-size:0.9rem; color:#555; margin-bottom:10px; }
+  @media (min-width:900px){ iframe{ height:480px; } }
 </style>
 </head>
 <body>
 
 <h1>Avaliação de Comunicação Sinalizada</h1>
+<p class="meta">Selecione a opção de avaliação, escreva observações se necessário, escolha seu nome e clique em <strong>Enviar</strong>. O e-mail será preparado para <strong>4encontrolibras@gmail.com</strong>.</p>
 
 <script>
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzMMSjxhE-AkPYxEdr96w9yjWZbOkURFn9MSJ70pGFAV-u0no1nvhSCtk3cRxrmDJc/exec';
-
-function enviar(e, id) {
-  e.preventDefault();
-  const form = document.getElementById('form' + id);
-  const data = {
-    id: id,
-    status: form.status.value,
-    observacoes: form.observacoes.value,
-    avaliador: form.avaliador.value
-  };
-  fetch(WEB_APP_URL, {
-    method: 'POST',
-    body: JSON.stringify(data)
-  }).then(res => {
-    if(res.ok) alert('Avaliação enviada!');
-    else alert('Erro ao enviar.');
-    form.reset();
-  });
-}
+const TO_EMAIL = "4encontrolibras@gmail.com";
 
 const posters = [
   {id:1, pdf:"https://drive.google.com/file/d/1mPKl7UzA5rWkPed8azTIZS62EMgxLA9E/preview"},
@@ -88,31 +79,81 @@ const posters = [
 
 const avaliadores = ["Ana Regina", "Fernanda Soares", "Heloise Gripp", "Priscilla Cavalcante"];
 
-posters.forEach(poster => {
-  const div = document.createElement('div');
-  div.className = 'poster';
-  div.innerHTML = `
-    <h2>Avaliação ${poster.id}</h2>
-    <iframe src="${poster.pdf}"></iframe>
-    <form id="form${poster.id}" onsubmit="enviar(event, ${poster.id})">
-      <label>
-        <input type="radio" name="status" value="Aprovado" required> Aprovado
-        <input type="radio" name="status" value="Aprovado com correcoes"> Aprovado com correções
-        <input type="radio" name="status" value="Reprovado"> Reprovado
-      </label>
-      <label>Observações:</label>
-      <textarea name="observacoes"></textarea>
-      <label>Avaliador:
-        <select name="avaliador" required>
-          <option value="">Selecione</option>
-          ${avaliadores.map(a => `<option>${a}</option>`).join('')}
-        </select>
-      </label>
-      <button type="submit">Enviar</button>
+// cria cada bloco de avaliação
+posters.forEach(p => {
+  const container = document.createElement('div');
+  container.className = 'poster';
+  container.innerHTML = `
+    <h2>Avaliação ${p.id}</h2>
+    <iframe src="${p.pdf}" title="Pôster ${p.id}"></iframe>
+    <form id="form${p.id}" class="form">
+      <label>Selecione o resultado:</label>
+      <div class="radios">
+        <label><input type="radio" name="status" value="Aprovado" required> Aprovado</label>
+        <label><input type="radio" name="status" value="Aprovado com correcoes"> Aprovado com correções</label>
+        <label><input type="radio" name="status" value="Reprovado"> Reprovado</label>
+      </div>
+      <label for="obs${p.id}">Observações (opcional):</label>
+      <textarea id="obs${p.id}" name="observacoes" placeholder="Escreva suas observações..."></textarea>
+      <label for="aval${p.id}">Avaliador:</label>
+      <select id="aval${p.id}" name="avaliador" required>
+        <option value="">Selecione</option>
+        ${avaliadores.map(a => `<option value="${a}">${a}</option>`).join('')}
+      </select>
+      <div>
+        <button type="submit">Enviar</button>
+      </div>
     </form>
   `;
-  document.body.appendChild(div);
+  document.body.appendChild(container);
+
+  // Adiciona listener de envio do formulário
+  const form = container.querySelector('form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    enviarMail(p.id, form);
+  });
 });
+
+// função que monta mailto e abre o cliente de e-mail
+function enviarMail(id, form) {
+  // pega status selecionado
+  const statusInput = form.querySelector('input[name="status"]:checked');
+  const status = statusInput ? statusInput.value : '';
+  const observacoes = form.querySelector('textarea[name="observacoes"]').value.trim();
+  const avaliador = form.querySelector('select[name="avaliador"]').value;
+
+  if (!status) {
+    alert('Por favor selecione um resultado antes de enviar.');
+    return;
+  }
+  if (!avaliador) {
+    alert('Por favor selecione seu nome (avaliador).');
+    return;
+  }
+
+  const subject = `Avaliação ${id} - Comunicação Sinalizada`;
+  const bodyLines = [
+    `Avaliação: ${id}`,
+    `Data: ${new Date().toLocaleString()}`,
+    `Avaliador: ${avaliador}`,
+    `Resultado: ${status}`,
+    `Observações:`,
+    observacoes || '(sem observações)',
+    '',
+    '--- Enviado via formulário de avaliação ---'
+  ];
+  const body = bodyLines.join('\n');
+
+  // monta mailto com encode
+  const mailto = `mailto:${TO_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  // abre o cliente de e-mail (em nova aba/janela ou no próprio navegador)
+  window.location.href = mailto;
+
+  // mostra mensagem de agradecimento substituindo o formulário
+  form.innerHTML = `<div class="thanks">Obrigado pela avaliação! (Avaliação ${id})</div>`;
+}
 </script>
 
 </body>
